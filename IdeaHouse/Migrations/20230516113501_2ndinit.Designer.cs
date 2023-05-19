@@ -4,6 +4,7 @@ using IdeaHouse.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdeaHouse.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230516113501_2ndinit")]
+    partial class _2ndinit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,16 +37,11 @@ namespace IdeaHouse.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IdeaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdeaId");
 
                     b.ToTable("Categories");
                 });
@@ -85,13 +83,6 @@ namespace IdeaHouse.Migrations
                     b.ToTable("Ideas");
                 });
 
-            modelBuilder.Entity("IdeaHouse.Models.Category", b =>
-                {
-                    b.HasOne("IdeaHouse.Models.Idea", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("IdeaId");
-                });
-
             modelBuilder.Entity("IdeaHouse.Models.Idea", b =>
                 {
                     b.HasOne("IdeaHouse.Models.Category", "Category")
@@ -101,11 +92,6 @@ namespace IdeaHouse.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("IdeaHouse.Models.Idea", b =>
-                {
-                    b.Navigation("Categories");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,80 @@
+﻿@using IdeaHouse;
+@using IdeaHouse.ViewModel
+@model IdeaViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Idea</title>
+</head>
+<body>
+    <h1>Create Idea</h1>
+    <form method="post" asp-action="AddIdea" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Name your idea">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" placeholder="Describe your idea">
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="form-control">
+                <option value="1">Completed</option>
+                <option value="2">Ongoing</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" class="form-control" placeholder="Idea completion date">
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Rating"></label>
+            <div class="rating">
+                <input type="radio" id="star5" name="Rating" value="5" @(Model.Rating == "5" ? "checked" : "")>
+                <label for="star5"></label>
+                <input type="radio" id="star4" name="Rating" value="4" @(Model.Rating == "4" ? "checked" : "")>
+                <label for="star4"></label>
+                <input type="radio" id="star3" name="Rating" value="3" @(Model.Rating == "3" ? "checked" : "")>
+                <label for="star3"></label>
+                <input type="radio" id="star2" name="Rating" value="2" @(Model.Rating == "2" ? "checked" : "")>
+                <label for="star2"></label>
+                <input type="radio" id="star1" name="Rating" value="1" @(Model.Rating == "1" ? "checked" : "")>
+                <label for="star1"></label>
+            </div>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CategoryId"></label>
+            @if (Model.CategoryId != null)
+            {
+                <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control">
+                    <option value="">Select a category</option>
+                </select>
+            }
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+
+
+
+
+
+
+
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</body>
+</html>
