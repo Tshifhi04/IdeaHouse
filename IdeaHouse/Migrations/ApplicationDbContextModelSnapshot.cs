@@ -34,16 +34,11 @@ namespace IdeaHouse.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("IdeaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdeaId");
 
                     b.ToTable("Categories");
                 });
@@ -57,6 +52,9 @@ namespace IdeaHouse.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CategoryId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -82,14 +80,9 @@ namespace IdeaHouse.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Ideas");
-                });
+                    b.HasIndex("CategoryId1");
 
-            modelBuilder.Entity("IdeaHouse.Models.Category", b =>
-                {
-                    b.HasOne("IdeaHouse.Models.Idea", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("IdeaId");
+                    b.ToTable("Ideas");
                 });
 
             modelBuilder.Entity("IdeaHouse.Models.Idea", b =>
@@ -100,12 +93,16 @@ namespace IdeaHouse.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IdeaHouse.Models.Category", null)
+                        .WithMany("Ideas")
+                        .HasForeignKey("CategoryId1");
+
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("IdeaHouse.Models.Idea", b =>
+            modelBuilder.Entity("IdeaHouse.Models.Category", b =>
                 {
-                    b.Navigation("Categories");
+                    b.Navigation("Ideas");
                 });
 #pragma warning restore 612, 618
         }

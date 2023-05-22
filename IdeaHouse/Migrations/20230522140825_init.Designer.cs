@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdeaHouse.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230516113501_2ndinit")]
-    partial class _2ndinit
+    [Migration("20230522140825_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,9 @@ namespace IdeaHouse.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CategoryId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -80,6 +83,8 @@ namespace IdeaHouse.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CategoryId1");
+
                     b.ToTable("Ideas");
                 });
 
@@ -91,7 +96,16 @@ namespace IdeaHouse.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("IdeaHouse.Models.Category", null)
+                        .WithMany("Ideas")
+                        .HasForeignKey("CategoryId1");
+
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("IdeaHouse.Models.Category", b =>
+                {
+                    b.Navigation("Ideas");
                 });
 #pragma warning restore 612, 618
         }

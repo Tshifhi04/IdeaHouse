@@ -29,6 +29,10 @@ namespace IdeaHouse.Repository
         {
             return await _context.Categories.ToListAsync();
         }
+        public async Task<Category> GetCategoryById(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
 
         public bool save()
         {

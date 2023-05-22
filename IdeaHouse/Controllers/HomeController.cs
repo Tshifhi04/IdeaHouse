@@ -1,8 +1,10 @@
-﻿using IdeaHouse.Interfaces;
+﻿using IdeaHouse.Data;
+using IdeaHouse.Interfaces;
 using IdeaHouse.Models;
 using IdeaHouse.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
 using System.Diagnostics;
 
@@ -13,6 +15,7 @@ namespace IdeaHouse.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IIdeaRepository _ideaRepository;
+        private readonly ApplicationDbContext _context;
 
         public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepository,IIdeaRepository ideaRepository)
         {
@@ -37,59 +40,44 @@ namespace IdeaHouse.Controllers
             _categoryRepository.Add(category);
             return RedirectToAction("Index");
         }
-
-        [HttpGet]
         public async Task<IActionResult> AddIdea()
         {
-            var categories = await _categoryRepository.GetAllCategories();
-            var viewModel = new IdeaViewModel();
-
-            if (categories != null)
+            var viewModel = new Idea
             {
-                viewModel.Categories = categories.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                });
-            }
-            else
-            {
-                viewModel.Categories = Enumerable.Empty<SelectListItem>();
-            }
+                Categories = await _categoryRepository.GetAllCategories()
+            };
 
             return View(viewModel);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> AddIdea(IdeaViewModel viewModel)
+        public async Task<IActionResult> AddIdea(Idea viewModel)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                viewModel.Categories = (await _categoryRepository.GetAllCategories())
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    });
-                return View(viewModel);
+                var idea = new Idea
+                {
+                    Name = viewModel.Name,
+                    Description = viewModel.Description,
+                    Rating = viewModel.Rating,
+                    Status = viewModel.Status,
+                    Date = viewModel.Date,
+                    CategoryId = viewModel.Category.Id,
+                    Categories = viewModel.Categories,
+                    
+                };
+
+                _ideaRepository.Add(idea);
+                return RedirectToAction("Index"); // Redirect to home or any other page
             }
 
-            var idea = new Idea
-            {
-                Name = viewModel.Name,
-                Description = viewModel.Description,
-                Rating = viewModel.Rating,
-                Status = viewModel.Status,
-                Date = viewModel.Date,
-                CategoryId = viewModel.CategoryId,
-               // Categories = viewModel.Categories
-            };
+            var categories = await _categoryRepository.GetAllCategories();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
 
-            _ideaRepository.Add(idea);
-
-            return RedirectToAction("Index", "Home");
+            return View(viewModel);
         }
+
 
 
         public async Task<IActionResult> Categories() 

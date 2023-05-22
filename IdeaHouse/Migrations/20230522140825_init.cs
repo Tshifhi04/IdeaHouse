@@ -34,8 +34,10 @@ namespace IdeaHouse.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                   // CategoryId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,12 +48,22 @@ namespace IdeaHouse.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    //table.ForeignKey(
+                    //    name: "FK_Ideas_Categories_CategoryId1",
+                    //    column: x => x.CategoryId1,
+                    //    principalTable: "Categories",
+                    //    principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ideas_CategoryId",
                 table: "Ideas",
                 column: "CategoryId");
+
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Ideas_CategoryId1",
+            //    table: "Ideas",
+            //    column: "CategoryId1");
         }
 
         /// <inheritdoc />

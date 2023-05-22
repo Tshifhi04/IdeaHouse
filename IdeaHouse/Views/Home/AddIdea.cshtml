@@ -1,6 +1,6 @@
 ﻿@using IdeaHouse;
 @using IdeaHouse.ViewModel
-@model IdeaViewModel
+@model Idea
 
 <!DOCTYPE html>
 <html lang="en">
@@ -43,29 +43,36 @@
         <div class="form-group">
             <label asp-for="Rating"></label>
             <div class="rating">
-                <input type="radio" id="star5" name="Rating" value="5" @(Model.Rating == "5" ? "checked" : "")>
+                <input type="radio" id="star5" name="Rating" value="5" @(Model?.Rating == "5" ? "checked" : "")>
+
                 <label for="star5"></label>
-                <input type="radio" id="star4" name="Rating" value="4" @(Model.Rating == "4" ? "checked" : "")>
+                <input type="radio" id="star4" name="Rating" value="4" @(Model?.Rating == "4" ? "checked" : "")>
                 <label for="star4"></label>
-                <input type="radio" id="star3" name="Rating" value="3" @(Model.Rating == "3" ? "checked" : "")>
+                <input type="radio" id="star3" name="Rating" value="3" @(Model?.Rating == "3" ? "checked" : "")>
                 <label for="star3"></label>
-                <input type="radio" id="star2" name="Rating" value="2" @(Model.Rating == "2" ? "checked" : "")>
+                <input type="radio" id="star2" name="Rating" value="2" @(Model?.Rating == "2" ? "checked" : "")>
                 <label for="star2"></label>
-                <input type="radio" id="star1" name="Rating" value="1" @(Model.Rating == "1" ? "checked" : "")>
+                <input type="radio" id="star1" name="Rating" value="1" @(Model?.Rating == "1" ? "checked" : "")>
                 <label for="star1"></label>
             </div>
             <span asp-validation-for="Rating" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="CategoryId"></label>
-            @if (Model.CategoryId != null)
+        <!-- Existing code... -->
+
+        <select asp-for="CategoryId" class="form-control">
+            <option value="">-- Select a category --</option>
+            @if (Model.Categories != null)
             {
-                <select asp-for="CategoryId" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" class="form-control">
-                    <option value="">Select a category</option>
-                </select>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
             }
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
+        </select>
+
+
+        <!-- Remaining code... -->
+
 
 
 
