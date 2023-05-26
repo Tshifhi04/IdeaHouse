@@ -12,9 +12,12 @@ namespace IdeaHouse.Models
         public string Status { get; set; }
         public DateTime Date { get; set; }
 
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
        public  IEnumerable<Category>? Categories { get; set; }
+       
+
 
     }
 

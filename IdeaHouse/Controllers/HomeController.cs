@@ -4,6 +4,7 @@ using IdeaHouse.Models;
 using IdeaHouse.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -24,7 +25,11 @@ namespace IdeaHouse.Controllers
             _ideaRepository = ideaRepository;
 
         }
-
+        public async Task< IActionResult> IdeaDetail(int id)
+        {
+            var idea = await _ideaRepository.GetIdeaById(id);
+            return View(idea);
+        }
         public IActionResult Index()
         {
             return View();
@@ -63,10 +68,13 @@ namespace IdeaHouse.Controllers
                     Rating = viewModel.Rating,
                     Status = viewModel.Status,
                     Date = viewModel.Date,
-                    CategoryId = viewModel.Category.Id,
-                    Categories = viewModel.Categories,
-                    
+                    CategoryId = viewModel.CategoryId, // Set a default value if viewModel.Category is null
+                    Category = viewModel.Category
+
+
                 };
+
+              
 
                 _ideaRepository.Add(idea);
                 return RedirectToAction("Index"); // Redirect to home or any other page
@@ -78,7 +86,46 @@ namespace IdeaHouse.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> Ideas()
+        {
+            List<Idea> ideas = new List<Idea>();
 
+            string connectionString = "Data Source=DESKTOP-6BMGPR2\\SQLEXPRESS;Initial Catalog=IdeasApp;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
+;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM dbo.Ideas INNER JOIN dbo.Categories ON Categories.Id = Ideas.CategoryId;";
+                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Idea idea = new Idea
+                            {
+                                Id = (int)reader["Id"],
+                                Name = (string)reader["Name"],
+                                Description = (string)reader["Description"],
+                                Category = new Category
+                                {
+                                    Id = (int)reader["CategoryId"],
+                                    Name = (string)reader["Name"],
+                                                                        Description = (string)reader["Description"]
+
+                                }
+                            };
+
+                            ideas.Add(idea);
+                        }
+                    }
+                }
+            }
+
+            return View(ideas);
+
+        }
 
         public async Task<IActionResult> Categories() 
         {

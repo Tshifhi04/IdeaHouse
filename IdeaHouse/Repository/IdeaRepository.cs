@@ -30,6 +30,10 @@ namespace IdeaHouse.Repository
         {
             return await _context.Ideas.ToListAsync();
         }
+        public async Task<Idea> GetIdeaById(int id)
+        {
+            return await _context.Ideas.FindAsync(id);
+        }
 
         public bool save()
         {
