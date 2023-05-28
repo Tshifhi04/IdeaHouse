@@ -5,6 +5,7 @@ namespace IdeaHouse.Interfaces
     public interface IIdeaRepository
     {
         Task<Idea> GetIdeaById(int id);
+        Task<IEnumerable<Idea>> GetAllIdeasWithCategories();
         Task<IEnumerable<Idea>> GetAllIdeas();
         bool Add(Idea ideas);
         bool Update(Idea ideas);

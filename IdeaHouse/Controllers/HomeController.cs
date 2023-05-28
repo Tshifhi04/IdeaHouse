@@ -1,4 +1,5 @@
 ﻿using IdeaHouse.Data;
+using IdeaHouse.Data.Enum;
 using IdeaHouse.Interfaces;
 using IdeaHouse.Models;
 using IdeaHouse.ViewModel;
@@ -25,11 +26,19 @@ namespace IdeaHouse.Controllers
             _ideaRepository = ideaRepository;
 
         }
-        public async Task< IActionResult> IdeaDetail(int id)
+
+        [ Route("Home/IdeaDetail/{id}")]
+        public async Task<IActionResult> IdeaDetail(int id)
         {
-            var idea = await _ideaRepository.GetIdeaById(id);
+            var idea = _ideaRepository.GetIdeaById(id);
+            if (idea == null)
+            {
+                return NotFound(); // Or handle the case when the idea is not found
+            }
+
             return View(idea);
         }
+
         public IActionResult Index()
         {
             return View();
@@ -47,85 +56,78 @@ namespace IdeaHouse.Controllers
         }
         public async Task<IActionResult> AddIdea()
         {
-            var viewModel = new Idea
+            var categories = await _categoryRepository.GetAllCategories();
+            var categoryList = categories.Select(c => new SelectListItem
             {
-                Categories = await _categoryRepository.GetAllCategories()
+                Value = c.Id.ToString(),
+                Text = c.Name
+            });
+
+            var idea = new Idea
+            {
+                CategoryList = categoryList
             };
 
-            return View(viewModel);
+            return View(idea);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> AddIdea(Idea viewModel)
+        public async Task<IActionResult> AddIdea(IdeaViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+
+
                 var idea = new Idea
                 {
+                    Id = viewModel.Id,
                     Name = viewModel.Name,
                     Description = viewModel.Description,
                     Rating = viewModel.Rating,
                     Status = viewModel.Status,
                     Date = viewModel.Date,
-                    CategoryId = viewModel.CategoryId, // Set a default value if viewModel.Category is null
-                    Category = viewModel.Category
+                    CategoryId = viewModel.CategoryId,
+                   CategoryList = viewModel.CategoryList,
+                    Category = await _categoryRepository.GetCategoryById(viewModel.CategoryId),
+                      
 
 
                 };
 
-              
+
 
                 _ideaRepository.Add(idea);
                 return RedirectToAction("Index"); // Redirect to home or any other page
             }
 
-            var categories = await _categoryRepository.GetAllCategories();
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            var allCategories = await _categoryRepository.GetAllCategories();
+            viewModel.CategoryList = new SelectList(allCategories, "Id", "Name");
 
             return View(viewModel);
         }
 
+
         public async Task<IActionResult> Ideas()
         {
-            List<Idea> ideas = new List<Idea>();
+            var ideasWithCategories = await _ideaRepository.GetAllIdeasWithCategories();
 
-            string connectionString = "Data Source=DESKTOP-6BMGPR2\\SQLEXPRESS;Initial Catalog=IdeasApp;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
-;
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            var ideaViewModels = ideasWithCategories.Select(idea => new IdeaViewModel
             {
-                connection.Open();
+                Id = idea.Id,
+                Name = idea.Name,
+                Description = idea.Description,
+                Rating = idea.Rating,
+                Status = idea.Status,
+                Date = idea.Date,
+                CategoryId = idea.CategoryId,
+                CategoryName = idea.Category?.Name,
+                CategoryDescription = idea.Category?.Description
+            }).ToList();
 
-                string sqlQuery = "SELECT * FROM dbo.Ideas INNER JOIN dbo.Categories ON Categories.Id = Ideas.CategoryId;";
-                using (SqlCommand command = new SqlCommand(sqlQuery, connection))
-                {
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Idea idea = new Idea
-                            {
-                                Id = (int)reader["Id"],
-                                Name = (string)reader["Name"],
-                                Description = (string)reader["Description"],
-                                Category = new Category
-                                {
-                                    Id = (int)reader["CategoryId"],
-                                    Name = (string)reader["Name"],
-                                                                        Description = (string)reader["Description"]
-
-                                }
-                            };
-
-                            ideas.Add(idea);
-                        }
-                    }
-                }
-            }
-
-            return View(ideas);
-
+            return View(ideaViewModels);
         }
+
 
         public async Task<IActionResult> Categories() 
         {

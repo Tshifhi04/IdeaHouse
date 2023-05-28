@@ -1,4 +1,5 @@
-﻿@using IdeaHouse;
+﻿
+@using IdeaHouse.Data.Enum;
 @using IdeaHouse.ViewModel
 @model Idea
 
@@ -26,12 +27,10 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Status"></label>
-            <select asp-for="Status" class="form-control">
-                <option value="1">Completed</option>
-                <option value="2">Ongoing</option>
+            <lable asp-for="projectCategory">Idea Status</lable>
+            <select asp-for="Status" asp-items="@Html.GetEnumSelectList<Status>()" class="form-control">
+                <option>--Select</option>
             </select>
-            <span asp-validation-for="Status" class="text-danger"></span>
         </div>
 
         <div class="form-group">
@@ -58,16 +57,9 @@
             <span asp-validation-for="Rating" class="text-danger"></span>
         </div>
         <!-- Existing code... -->
-
-        <select asp-for="Category" class="form-control">
-            <option value="">-- Select a category --</option>
-            @if (Model.Categories != null)
-            {
-                @foreach (var category in Model.Categories)
-                {
-                    <option value="@category.Id">@category.Name</option>
-                }
-            }
+        <label asp-for="CategoryId">Category:</label>
+        <select asp-for="CategoryId" asp-items="Model.CategoryList">
+            <option value="">-- Select Category --</option>
         </select>
 
 

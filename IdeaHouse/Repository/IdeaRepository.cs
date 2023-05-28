@@ -24,8 +24,16 @@ namespace IdeaHouse.Repository
             _context.Remove(ideas);
             return save();
 
+
+
         }
 
+
+     
+        public async Task<IEnumerable<Idea> > GetAllIdeasWithCategories()
+        {
+            return  _context.Ideas.Include(idea => idea.Category).ToList();
+        }
         public async Task<IEnumerable<Idea>> GetAllIdeas()
         {
             return await _context.Ideas.ToListAsync();
