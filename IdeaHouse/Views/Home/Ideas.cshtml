@@ -12,6 +12,7 @@
             <th>Rating</th>
             <th>Status</th>
             <th>Due Date</th>
+            <th>Remaining</th>
             <th>Category-Name</th>
             <th>Category-Description</th>
 
@@ -25,9 +26,53 @@
                
                 <td>@idea.Name</td>
                 <td>@idea.Description</td>
-                <td>@idea.Rating</td>
-                <td>@idea.Status</td>
+                <td>
+                    <div class="rating" style="direction: ltr; text-align: left;">
+                        @for (int i = 1; i <= idea.Rating; i++)
+                        {
+                            <span class="@(i <= idea.Rating ? "checked" : "")">&#9733;</span>
+                        }
+                    </div>
+                </td>
+
+                <td>@idea.Status  @if (idea.Status == IdeaHouse.Data.Enum.Status.Completed)
+                    {
+                        <span>&#10003;</span>
+                    }
+                     @if (idea.Status == IdeaHouse.Data.Enum.Status.Pending)
+                    {
+                        <span>&#9203;</span>
+
+                    }
+                </td>
+                   
                 <td>@idea.Date</td>
+                <td>
+                    @if (idea.Date != DateTime.MinValue)
+                    {
+                        DateTime currentDate = DateTime.Now;
+                        TimeSpan remainingTime = idea.Date - currentDate;
+                        int remainingDays = remainingTime.Days;
+
+                        @if (remainingDays > 0)
+                        {
+                             <button class="btn btn-success" disabled><span>@remainingDays Day(s) remaining</span></button>
+                        }
+                        else if (remainingDays == 0)
+                        {
+                            <button class="btn btn-warning" disabled>Due</button>
+                        }
+                        else 
+                        {
+                            <button class="btn btn-danger" disabled>OverDue</button>
+                        }
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
+                </td>
+
                <td>@idea.CategoryName</td>
                 <td>@idea.CategoryDescription</td>
 

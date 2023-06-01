@@ -42,16 +42,16 @@
         <div class="form-group">
             <label asp-for="Rating"></label>
             <div class="rating">
-                <input type="radio" id="star5" name="Rating" value="5" @(Model?.Rating == "5" ? "checked" : "")>
+                <input type="radio" id="star5" name="Rating" value=5 @(Model?.Rating == 5 ? "checked" : "")>
 
                 <label for="star5"></label>
-                <input type="radio" id="star4" name="Rating" value="4" @(Model?.Rating == "4" ? "checked" : "")>
+                <input type="radio" id="star4" name="Rating" value=4 @(Model?.Rating == 4 ? "checked" : "")>
                 <label for="star4"></label>
-                <input type="radio" id="star3" name="Rating" value="3" @(Model?.Rating == "3" ? "checked" : "")>
+                <input type="radio" id="star3" name="Rating" value=3 @(Model?.Rating == 3 ? "checked" : "")>
                 <label for="star3"></label>
-                <input type="radio" id="star2" name="Rating" value="2" @(Model?.Rating == "2" ? "checked" : "")>
+                <input type="radio" id="star2" name="Rating" value=2 @(Model?.Rating == 2 ? "checked" : "")>
                 <label for="star2"></label>
-                <input type="radio" id="star1" name="Rating" value="1" @(Model?.Rating == "1" ? "checked" : "")>
+                <input type="radio" id="star1" name="Rating" value=1 @(Model?.Rating == 1 ? "checked" : "")>
                 <label for="star1"></label>
             </div>
             <span asp-validation-for="Rating" class="text-danger"></span>

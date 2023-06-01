@@ -54,6 +54,8 @@ namespace IdeaHouse.Controllers
             _categoryRepository.Add(category);
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
         public async Task<IActionResult> AddIdea()
         {
             var categories = await _categoryRepository.GetAllCategories();
@@ -73,7 +75,7 @@ namespace IdeaHouse.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddIdea(IdeaViewModel viewModel)
+        public async Task<IActionResult> AddIdea(Idea viewModel)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +100,7 @@ namespace IdeaHouse.Controllers
 
 
                 _ideaRepository.Add(idea);
-                return RedirectToAction("Index"); // Redirect to home or any other page
+                return RedirectToAction("ideas"); // Redirect to home or any other page
             }
 
             var allCategories = await _categoryRepository.GetAllCategories();

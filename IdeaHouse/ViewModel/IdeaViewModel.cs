@@ -17,7 +17,7 @@ namespace IdeaHouse.ViewModel
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Please enter the rating of the idea.")]
-        public string Rating { get; set; }
+        public int Rating { get; set; }
 
         [Required(ErrorMessage = "Please enter the status of the idea.")]
         public Status Status { get; set; }
