@@ -3,9 +3,7 @@
 
 @model Idea
 
-
 <div class="main-container">
-
     <section class="bg-white">
         <div class="container">
             <div class="row justify-content-center">
@@ -13,7 +11,8 @@
                     <div class="media">
                         <div class="media-body">
                             <div class="mb-3">
-                                <form method="post" asp-controller="Home" asp-action="ideas" asp-route-id="@Model.Id">
+                                <form method="post" asp-controller="Home" asp-action="Update" asp-route-id="@Model.Id">
+
                                     <div class="form-group">
                                         <label for="name">Name</label>
                                         <input type="text" class="form-control" id="name" name="name" value="@Model.Name">
@@ -23,40 +22,48 @@
                                         <textarea class="form-control" id="description" name="description">@Model.Description</textarea>
                                     </div>
                                     <div class="form-group">
-                                        <lable asp-for="projectCategory"> Status</lable>
+                                        <label asp-for="Status">Status</label>
                                         <select asp-for="Status" asp-items="@Html.GetEnumSelectList<Status>()" class="form-control">
-                                            <option>--Select</option>
+                                            <option value="">-- Select --</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="date">Date</label>
-                                        <input type="text" class="form-control" id="date" name="date" value="@Model.Date">
+                                        <input type="datetime-local" class="form-control" id="date" name="date" value="@Model.Date">
                                     </div>
                                     <div class="form-group" style="direction: ltr; text-align: left;">
                                         <label asp-for="Rating"></label>
                                         <div class="rating" style="font-size: 2px;">
-                                            <input type="radio" id="star5" name="Rating" value=5 @(Model?.Rating == 5 ? "checked" : "")>
-
+                                            <input type="radio" id="star5" name="Rating" value="5" @(Model?.Rating == 5 ? "checked" : "")>
                                             <label for="star5"></label>
-                                            <input type="radio" id="star4" name="Rating" value=4 @(Model?.Rating == 4 ? "checked" : "")>
+                                            <input type="radio" id="star4" name="Rating" value="4" @(Model?.Rating == 4 ? "checked" : "")>
                                             <label for="star4"></label>
-                                            <input type="radio" id="star3" name="Rating" value=3 @(Model?.Rating == 3 ? "checked" : "")>
+                                            <input type="radio" id="star3" name="Rating" value="3" @(Model?.Rating == 3 ? "checked" : "")>
                                             <label for="star3"></label>
-                                            <input type="radio" id="star2" name="Rating" value=2 @(Model?.Rating == 2 ? "checked" : "")>
+                                            <input type="radio" id="star2" name="Rating" value="2" @(Model?.Rating == 2 ? "checked" : "")>
                                             <label for="star2"></label>
-                                            <input type="radio" id="star1" name="Rating" value=1 @(Model?.Rating == 1 ? "checked" : "")>
+                                            <input type="radio" id="star1" name="Rating" value="1" @(Model?.Rating == 1 ? "checked" : "")>
                                             <label for="star1"></label>
                                         </div>
                                         <span asp-validation-for="Rating" class="text-danger"></span>
                                     </div>
-                                    <label asp-for="CategoryId">Category:</label>
-                                    <select asp-for="CategoryId" asp-items="Model.CategoryList">
-                                        <option value="">-- Select Category --</option>
-                                    </select>
-                                    <button style="margin-top:20px" type="submit" class="btn btn-outline-primary"><i class="icon-add-user"></i> Update</button>
+                                    <div class="form-group">
+                                        <label asp-for="CategoryId">Category:</label>
+                                        <select asp-for="CategoryId" asp-items="@((IEnumerable<SelectListItem>)ViewData["CategoryList"])" class="form-control">
+                                            <option value="">-- Select Category --</option>
+                                        </select>
+                                    </div>
+
+
+                                    <button style="margin-top: 20px" type="submit" class="btn btn-outline-primary">
+                                        <i class="icon-add-user"></i> Update
+                                    </button>
                                 </form>
+
                                 <form method="post" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">
-                                    <button type="submit" class="btn btn-outline-danger"><i class="icon-add-user"></i> Delete</button>
+                                    <button type="submit" class="btn btn-outline-danger">
+                                        <i class="icon-add-user"></i> Delete
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -67,5 +74,4 @@
             <!--end of row-->
         </div>
     </section>
-
-     
+</div>

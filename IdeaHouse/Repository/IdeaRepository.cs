@@ -18,6 +18,11 @@ namespace IdeaHouse.Repository
             _context.Add(ideas);
             return save();
         }
+        public bool Update(Idea ideas)
+        {
+            _context.Update(ideas);
+            return save();
+        }
 
         public bool Delete(Idea ideas)
         {
@@ -49,12 +54,7 @@ namespace IdeaHouse.Repository
             return saved > 0 ? true : false;
         }
 
-        public bool Update(Idea ideas)
-        {
-            _context.Update(ideas);
-            return save();
-        }
-
+      
         public async Task<Idea> FindAsync(int id)
         {
             return await _context.Ideas.FindAsync(id);

@@ -19,7 +19,7 @@ namespace IdeaHouse.Controllers
         private readonly IIdeaRepository _ideaRepository;
         private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepository,IIdeaRepository ideaRepository)
+        public HomeController(ILogger<HomeController> logger, ICategoryRepository categoryRepository, IIdeaRepository ideaRepository)
         {
             _logger = logger;
             _categoryRepository = categoryRepository;
@@ -27,12 +27,7 @@ namespace IdeaHouse.Controllers
 
         }
 
-        public async Task<IActionResult> IdeaDetail(int id)
-        {
-            Idea idea = await _ideaRepository.GetIdeaById(id);
-           
-            return View(idea);
-        }
+    
 
         public IActionResult Index()
         {
@@ -74,7 +69,7 @@ namespace IdeaHouse.Controllers
 
             if (idea != null)
             {
-               _ideaRepository.Delete(idea);
+                _ideaRepository.Delete(idea);
                 return RedirectToAction("Ideas"); // Redirect to the Index action or any other desired action
             }
 
@@ -82,7 +77,17 @@ namespace IdeaHouse.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> IdeaDetail(int id)
+        {
+            Idea idea = await _ideaRepository.GetIdeaById(id);
 
+            return View(idea);
+        }
+
+
+
+        [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             var idea = await _ideaRepository.FindAsync(id);
@@ -97,7 +102,7 @@ namespace IdeaHouse.Controllers
             {
                 Value = c.Id.ToString(),
                 Text = c.Name
-            });
+            }).ToList();
 
             var viewModel = new Idea
             {
@@ -111,10 +116,38 @@ namespace IdeaHouse.Controllers
                 CategoryList = categoryList
             };
 
+            ViewData["CategoryList"] = categoryList; // Pass the categoryList to ViewData
+
             return View(viewModel);
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Update(Idea viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var idea = await _ideaRepository.FindAsync(viewModel.Id);
+
+            if (idea == null)
+            {
+                return RedirectToAction("NotFound"); // Redirect to a "not found" action or error page
+            }
+
+            idea.Name = viewModel.Name;
+            idea.Description = viewModel.Description;
+            idea.Status = viewModel.Status;
+            idea.Date = viewModel.Date;
+            idea.Rating = viewModel.Rating;
+            idea.CategoryId = viewModel.CategoryId;
+
+            _ideaRepository.Update(idea);
+
+            return RedirectToAction("Index"); // Redirect to the appropriate action after the update
+        }
 
 
         [HttpPost]
