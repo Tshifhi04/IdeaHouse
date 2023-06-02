@@ -1,47 +1,63 @@
 ﻿@using IdeaHouse.ViewModel
-@model IdeaViewModel
+@using IdeaHouse.Data.Enum;
+
+@model Idea
 
 
 <div class="main-container">
-  
+
     <section class="bg-white">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8">
                     <div class="media">
-                       
                         <div class="media-body">
                             <div class="mb-3">
-                                <h1 class="h2 mb-2">@Model.Name</h1>
-                                <h1 class="h2 mb-2">@Model.Description</h1>
-                                <h5 class="h5 mb-2">@Model.Status</h5>
-                                <h1 class="h2 mb-2">@Model.Date</h1>
-                                <h5 class="h5 mb-2">@Model.Status</h5>
-                              
-                           <div>
-                            <p>
-                                <h5 class="h5 mb-2">@Model.Rating</h5>
-                            </p>
-                            <div>
-                                <a type="button" asp-controller="Home" asp-action="IdeaDetail" asp-route-id="@Model.Id" class=" btn-sm btn-outline-secondary">
-
-                                    <button class="btn btn-outline-primary"><i class="icon-add-user"></i> Update</button>
-                                </a>
-                                <button class="btn btn-outline-primary">
-                                    <i class="icon-mail"></i>
-                                </button>
-                                <div class="dropdown d-inline-block">
-                                    <button class="btn btn-outline-primary dropdown-toggle dropdown-toggle-no-arrow" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="icon-dots-three-horizontal"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-sm" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 36px, 0px);">
-                                        <a class="dropdown-item" href="#">Add to group</a>
-                                        <a class="dropdown-item" href="#">Share Profile</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="#">Block</a>
-                                        <a class="dropdown-item" href="#">Report</a>
+                                <form method="post" asp-controller="Home" asp-action="ideas" asp-route-id="@Model.Id">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="@Model.Name">
                                     </div>
-                                </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="description" name="description">@Model.Description</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <lable asp-for="projectCategory"> Status</lable>
+                                        <select asp-for="Status" asp-items="@Html.GetEnumSelectList<Status>()" class="form-control">
+                                            <option>--Select</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="date">Date</label>
+                                        <input type="text" class="form-control" id="date" name="date" value="@Model.Date">
+                                    </div>
+                                    <div class="form-group" style="direction: ltr; text-align: left;">
+                                        <label asp-for="Rating"></label>
+                                        <div class="rating" style="font-size: 2px;">
+                                            <input type="radio" id="star5" name="Rating" value=5 @(Model?.Rating == 5 ? "checked" : "")>
+
+                                            <label for="star5"></label>
+                                            <input type="radio" id="star4" name="Rating" value=4 @(Model?.Rating == 4 ? "checked" : "")>
+                                            <label for="star4"></label>
+                                            <input type="radio" id="star3" name="Rating" value=3 @(Model?.Rating == 3 ? "checked" : "")>
+                                            <label for="star3"></label>
+                                            <input type="radio" id="star2" name="Rating" value=2 @(Model?.Rating == 2 ? "checked" : "")>
+                                            <label for="star2"></label>
+                                            <input type="radio" id="star1" name="Rating" value=1 @(Model?.Rating == 1 ? "checked" : "")>
+                                            <label for="star1"></label>
+                                        </div>
+                                        <span asp-validation-for="Rating" class="text-danger"></span>
+                                    </div>
+                                    <label asp-for="CategoryId">Category:</label>
+                                    <select asp-for="CategoryId" asp-items="Model.CategoryList">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <button style="margin-top:20px" type="submit" class="btn btn-outline-primary"><i class="icon-add-user"></i> Update</button>
+                                </form>
+                                <form method="post" asp-controller="Home" asp-action="Delete" asp-route-id="@Model.Id">
+                                    <button type="submit" class="btn btn-outline-danger"><i class="icon-add-user"></i> Delete</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -50,4 +66,6 @@
             </div>
             <!--end of row-->
         </div>
+    </section>
+
      

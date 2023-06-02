@@ -11,5 +11,6 @@ namespace IdeaHouse.Interfaces
         bool Update(Idea ideas);
         bool Delete(Idea ideas);
         bool save();
+        Task<Idea> FindAsync(int id);
     }
 }

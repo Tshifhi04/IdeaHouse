@@ -51,7 +51,14 @@ namespace IdeaHouse.Repository
 
         public bool Update(Idea ideas)
         {
-            throw new NotImplementedException();
+            _context.Update(ideas);
+            return save();
+        }
+
+        public async Task<Idea> FindAsync(int id)
+        {
+            return await _context.Ideas.FindAsync(id);
+
         }
     }
 }

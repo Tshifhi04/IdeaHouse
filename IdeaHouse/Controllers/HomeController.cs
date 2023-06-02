@@ -27,15 +27,10 @@ namespace IdeaHouse.Controllers
 
         }
 
-        [ Route("Home/IdeaDetail/{id}")]
         public async Task<IActionResult> IdeaDetail(int id)
         {
-            var idea = _ideaRepository.GetIdeaById(id);
-            if (idea == null)
-            {
-                return NotFound(); // Or handle the case when the idea is not found
-            }
-
+            Idea idea = await _ideaRepository.GetIdeaById(id);
+           
             return View(idea);
         }
 
@@ -72,6 +67,54 @@ namespace IdeaHouse.Controllers
 
             return View(idea);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            Idea idea = await _ideaRepository.FindAsync(id);
+
+            if (idea != null)
+            {
+               _ideaRepository.Delete(idea);
+                return RedirectToAction("Ideas"); // Redirect to the Index action or any other desired action
+            }
+
+            return RedirectToAction("Not Found"); // Redirect to the Index action or any other desired action
+        }
+
+
+
+        public async Task<IActionResult> Update(int id)
+        {
+            var idea = await _ideaRepository.FindAsync(id);
+
+            if (idea == null)
+            {
+                return RedirectToAction("NotFound"); // Redirect to a "not found" action or error page
+            }
+
+            var allCategories = await _categoryRepository.GetAllCategories();
+            var categoryList = allCategories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            });
+
+            var viewModel = new Idea
+            {
+                Id = idea.Id,
+                Name = idea.Name,
+                Description = idea.Description,
+                Status = idea.Status,
+                Date = idea.Date,
+                Rating = idea.Rating,
+                CategoryId = idea.CategoryId,
+                CategoryList = categoryList
+            };
+
+            return View(viewModel);
+        }
+
+
 
 
         [HttpPost]

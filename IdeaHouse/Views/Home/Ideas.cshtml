@@ -50,19 +50,43 @@
                 <td>
                     @if (idea.Date != DateTime.MinValue)
                     {
-                        DateTime currentDate = DateTime.Now;
-                        TimeSpan remainingTime = idea.Date - currentDate;
+                        DateTime currentDate = DateTime.Now.Date; // Get the current date only
+                        DateTime targetDate = idea.Date.Date; // Get the target date only
+                        TimeSpan remainingTime = targetDate - currentDate;
                         int remainingDays = remainingTime.Days;
 
-                        @if (remainingDays > 0)
+                        if (remainingDays > 0)
                         {
-                             <button class="btn btn-success" disabled><span>@remainingDays Day(s) remaining</span></button>
+                            <button id="countdownButton" class="btn btn-success" disabled><span>@remainingDays Day(s) remaining</span></button>
+
+                            <script>
+                                // Function to update the countdown button daily
+                                function updateCountdown() {
+                                    var countdownButton = document.getElementById("countdownButton");
+                                    var currentDate = new Date().setHours(0, 0, 0, 0); // Get the current date only without time
+                                    var targetDate = new Date("@idea.Date").setHours(0, 0, 0, 0); // Get the target date only without time
+                                    var remainingTime = targetDate - currentDate;
+                                    var remainingDays = Math.floor(remainingTime / (24 * 60 * 60 * 1000));
+
+                                    if (remainingDays > 0) {
+                                        countdownButton.innerHTML = remainingDays + " Day(s) remaining";
+                                    } else if (remainingDays == 0) {
+                                        countdownButton.innerHTML = "Due";
+                                    } else {
+                                        countdownButton.innerHTML = "OverDue";
+                                    }
+                                }
+
+                                // Update countdown initially and check daily
+                                updateCountdown();
+                                setInterval(updateCountdown, 24 * 60 * 60 * 1000); // Check every 24 hours (daily)
+                            </script>
                         }
                         else if (remainingDays == 0)
                         {
                             <button class="btn btn-warning" disabled>Due</button>
                         }
-                        else 
+                        else
                         {
                             <button class="btn btn-danger" disabled>OverDue</button>
                         }
@@ -73,6 +97,7 @@
                     }
                 </td>
 
+
                <td>@idea.CategoryName</td>
                 <td>@idea.CategoryDescription</td>
 
@@ -81,7 +106,7 @@
                         <!-- Button to get idea details -->
                     <div class="btn-group">
                         <!-- Button to get idea details -->
-                        <a href="@Url.Action("Details", "Home", new { id = idea.Id })" class="btn btn-sm btn-outline-secondary">Manage</a>
+                        <a href="@Url.Action("IdeaDetail", "Home", new { id = idea.Id })" class="btn btn-sm btn-outline-secondary">Manage</a>
                     </div>
                     
                 </td>
